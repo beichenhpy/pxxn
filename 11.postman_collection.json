@@ -1,0 +1,45 @@
+{
+	"info": {
+		"_postman_id": "4abf7e70-243c-4def-b06c-17d2e970eeb0",
+		"name": "11",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "获取视频链接",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "X-Requested-With",
+						"value": "XMLHttpRequest",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"id\":1,\n    \"surePlay\":1,\n    \"isTrySee\":true\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://yrav.cc/api/payvideo.html",
+					"protocol": "http",
+					"host": [
+						"yrav",
+						"cc"
+					],
+					"path": [
+						"api",
+						"payvideo.html"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"protocolProfileBehavior": {}
+}
