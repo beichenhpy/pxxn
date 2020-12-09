@@ -18,18 +18,21 @@ import java.util.concurrent.LinkedBlockingQueue;
 public class InitQueue implements ApplicationListener<ContextRefreshedEvent> {
     public static LinkedBlockingQueue<Integer> linkedBlockingQueue;
     public static LinkedBlockingQueue<Integer> linkedBlockingQueueTmp;
+    private static final Integer start = 0;
+    private static final Integer end = 2200;
+    private static final Integer size = 2200;
     @Override
     public void onApplicationEvent(ContextRefreshedEvent event) {
         linkedBlockingQueue = new LinkedBlockingQueue<>();
         //每次上限800
-        for (int i = 2029; i < 2200; i++) {
+        for (int i = start; i < end; i++) {
             try {
                 linkedBlockingQueue.put(i);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
         }
-        for (int i = 0; i < linkedBlockingQueue.size(); i++) {
+        for (int i = 0; i < size; i++) {
             Thread thread = new Thread(new HandleMessage());
             //每次处理10个
             linkedBlockingQueueTmp = new LinkedBlockingQueue<>();
@@ -43,7 +46,7 @@ public class InitQueue implements ApplicationListener<ContextRefreshedEvent> {
             }
             thread.start();
             try {
-                Thread.sleep(1000);
+                Thread.sleep(500);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
