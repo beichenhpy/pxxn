@@ -35,23 +35,29 @@ public class RequestVideoInfo {
                         MediaType.parse("application/json; charset=utf-8"),
                         JSONObject.toJSONString(requestQuery)))
                 .build();
-        try {
-            Response execute = okHttpClient.newCall(request).execute();
-            if (execute.isSuccessful()){
-                String json = execute.body().string();
-                ResponseInfo responseInfo = JSON.parseObject(json, ResponseInfo.class);
-                if(responseInfo.getResultCode() == 0){
-                    VideoInfo videoInfo = responseInfo.getData().getVideoInfo();
-                    JdbcTemplate jdbcTemplate = SpringContextUtils.getBean("jdbcTemplate", JdbcTemplate.class);
-                    Integer integer = jdbcTemplate.queryForObject("select count(*) from video.table_name where id = ?", Integer.class, id);
-                    if (integer == 0){
-                        log.info("-----拿到数据了");
-                        jdbcTemplate.update("insert into video.table_name(id, title, url, thumbnail) VALUES (?,?,?,?)",videoInfo.getId(),videoInfo.getTitle(),videoInfo.getUrl(),videoInfo.getThumbnail());
+
+            okHttpClient.newCall(request).enqueue(new Callback() {
+                @Override
+                public void onFailure(Call call, IOException e) {
+
+                }
+                @Override
+                public void onResponse(Call call, Response response) throws IOException {
+                    String json = response.body().string();
+                    if (!"<!DOCTYPE html>".equals(json.substring(0,15))){
+                        ResponseInfo responseInfo = JSON.parseObject(json, ResponseInfo.class);
+                        if(responseInfo.getResultCode() == 0){
+                            VideoInfo videoInfo = responseInfo.getData().getVideoInfo();
+                            JdbcTemplate jdbcTemplate = SpringContextUtils.getBean("jdbcTemplate", JdbcTemplate.class);
+                            Integer integer = jdbcTemplate.queryForObject("select count(*) from video.table_name where id = ?", Integer.class, id);
+                            if (integer == 0) {
+                                log.info("-----拿到数据了");
+                                jdbcTemplate.update("insert into video.table_name(id, title, url, thumbnail) VALUES (?,?,?,?)", videoInfo.getId(), videoInfo.getTitle(), videoInfo.getUrl(), videoInfo.getThumbnail());
+                            }
+                        }
+                        response.body().close();
                     }
                 }
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+            });
     }
 }
