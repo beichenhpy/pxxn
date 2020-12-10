@@ -49,10 +49,10 @@ public class RequestVideoInfo {
                         if(responseInfo.getResultCode() == 0){
                             VideoInfo videoInfo = responseInfo.getData().getVideoInfo();
                             JdbcTemplate jdbcTemplate = SpringContextUtils.getBean("jdbcTemplate", JdbcTemplate.class);
-                            Integer integer = jdbcTemplate.queryForObject("select count(*) from video.table_name where id = ?", Integer.class, id);
+                            Integer integer = jdbcTemplate.queryForObject("select count(*) from video.videoinfo where id = ?", Integer.class, id);
                             if (integer == 0) {
                                 log.info("-----拿到数据了");
-                                jdbcTemplate.update("insert into video.table_name(id, title, url, thumbnail) VALUES (?,?,?,?)", videoInfo.getId(), videoInfo.getTitle(), videoInfo.getUrl(), videoInfo.getThumbnail());
+                                jdbcTemplate.update("insert into video.videoinfo(id, title, url, thumbnail) VALUES (?,?,?,?)", videoInfo.getId(), videoInfo.getTitle(), videoInfo.getUrl(), videoInfo.getThumbnail());
                             }
                         }
                         response.body().close();
